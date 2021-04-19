@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_app_nodejs/Pages/SignUpPage.dart';
 
 class WelcomePage extends StatefulWidget {
   @override
@@ -163,7 +164,9 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
   }
 
   onEmailClick() {
-
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => SignUpPage(),
+    ));
   }
 
 
