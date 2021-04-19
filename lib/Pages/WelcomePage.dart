@@ -46,6 +46,14 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller1.dispose();
+    _controller2.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
