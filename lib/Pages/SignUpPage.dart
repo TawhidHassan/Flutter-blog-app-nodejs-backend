@@ -1,23 +1,26 @@
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_app_nodejs/NetworkHandler.dart';
 import 'package:logger/logger.dart';
 
 class SignUpPage extends StatefulWidget {
+  SignUpPage({Key key}) : super(key: key);
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  NetworkHandler networkHandler=new NetworkHandler();
+  bool vis = true;
   final _globalkey = GlobalKey<FormState>();
+  NetworkHandler networkHandler = NetworkHandler();
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-
   String errorText;
   bool validate = false;
-  bool vis = true;
-  var log = Logger();
+  bool circular = false;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,53 +28,70 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Container(
           height: MediaQuery.of(context).size.height,
           // width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.white, Colors.green[200]],
-                begin: const FractionalOffset(0.0, 1.0),
-                end: const FractionalOffset(0.0, 1.0),
-                stops: [0.0, 1.0],
-                tileMode: TileMode.repeated,
-              ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white, Colors.green[200]],
+              begin: const FractionalOffset(0.0, 1.0),
+              end: const FractionalOffset(0.0, 1.0),
+              stops: [0.0, 1.0],
+              tileMode: TileMode.repeated,
             ),
-            child: Form(
-                key: _globalkey,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Sign up with email",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      usernameTextField(),
-                      emailTextField(),
-                      passwordTextField(),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      InkWell(
-                        onTap: (){
-                          if(_globalkey.currentState.validate()){
-                            //we send the data rest server
-                            Map<String,String>data={
-                              "username": _usernameController.text,
-                              "password": _passwordController.text,
-                              "email": _emailController.text,
+          ),
+          child: Form(
+            key: _globalkey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Sign up with email",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                usernameTextField(),
+                emailTextField(),
+                passwordTextField(),
+                SizedBox(
+                  height: 20,
+                ),
+                InkWell(
+                  onTap: () async {
+                    setState(() {
+                      circular = true;
+                    });
+                    await checkUser();
+                    if (_globalkey.currentState.validate() && validate) {
+                      // we will send the data to rest server
+                      Map<String, String> data = {
+                        "username": _usernameController.text,
+                        "email": _emailController.text,
+                        "password": _passwordController.text,
+                      };
+                      print(data);
+                      var responseRegister =
+                          await networkHandler.post("/user/register", data);
 
-                            };
+                      //Login Logic added here
 
-                            // log.d(data);
-                            networkHandler.post("/user/register", data);
-                          }
-                        },
-                        child: Container(
+                      //Login Logic end here
+
+                      setState(() {
+                        circular = false;
+                      });
+                    } else {
+                      setState(() {
+                        circular = false;
+                      });
+                    }
+                  },
+                  child: circular
+                      ? CircularProgressIndicator()
+                      : Container(
                           width: 150,
                           height: 50,
                           decoration: BoxDecoration(
@@ -89,15 +109,39 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                           ),
                         ),
-                      )
-                    ]
                 )
-            )
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
+  checkUser() async {
+    if (_usernameController.text.length == 0) {
+      setState(() {
+        // circular = false;
+        validate = false;
+        errorText = "Username Can't be empty";
+      });
+    } else {
+      var response = await networkHandler
+          .get("/user/checkUsername/${_usernameController.text}");
+      if (response['Status']) {
+        setState(() {
+          // circular = false;
+          validate = false;
+          errorText = "Username already taken";
+        });
+      } else {
+        setState(() {
+          // circular = false;
+          validate = true;
+        });
+      }
+    }
+  }
 
   Widget usernameTextField() {
     return Padding(
@@ -121,6 +165,7 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
+
   Widget emailTextField() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10.0),
@@ -148,7 +193,6 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-
   Widget passwordTextField() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10.0),
@@ -172,7 +216,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   });
                 },
               ),
-              helperText: "Password length should haves >=8",
+              helperText: "Password length should have >=8",
               helperStyle: TextStyle(
                 fontSize: 14,
               ),
@@ -188,6 +232,4 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-
-
 }
