@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_app_nodejs/NetworkHandler.dart';
+import 'package:logger/logger.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -6,6 +8,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  NetworkHandler networkHandler=new NetworkHandler();
   final _globalkey = GlobalKey<FormState>();
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
@@ -14,7 +17,7 @@ class _SignUpPageState extends State<SignUpPage> {
   String errorText;
   bool validate = false;
   bool vis = true;
-
+  var log = Logger();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,20 +56,36 @@ class _SignUpPageState extends State<SignUpPage> {
                       SizedBox(
                         height: 20,
                       ),
-                      Container(
-                        width: 150,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Color(0xff00A86B),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Sign Up",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                      InkWell(
+                        onTap: (){
+                          if(_globalkey.currentState.validate()){
+                            //we send the data rest server
+                            Map<String,String>data={
+                              "username": _usernameController.text,
+                              "password": _passwordController.text,
+                              "email": _emailController.text,
+
+                            };
+
+                            // log.d(data);
+                            networkHandler.post("/user/register", data);
+                          }
+                        },
+                        child: Container(
+                          width: 150,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xff00A86B),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
