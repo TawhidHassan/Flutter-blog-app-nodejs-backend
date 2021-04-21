@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_app_nodejs/Pages/SignUpPage.dart';
+import 'package:flutter_blog_app_nodejs/Pages/SinInPage.dart';
+
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:http/http.dart' as http;
 
 class WelcomePage extends StatefulWidget {
   @override
@@ -11,6 +17,10 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
   Animation<Offset> animation1;
   AnimationController _controller2;
   Animation<Offset> animation2;
+
+  bool _isLogin = false;
+  Map data;
+  final facebookLogin = FacebookLogin();
 
   @override
   void initState() {
@@ -136,7 +146,9 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                       ),
                       InkWell(
                         onTap: () {
-
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SignInPage(),
+                          ));
                         },
                         child: Text(
                           "Sign In",
@@ -157,10 +169,31 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
     );
   }
 
-
-
   onFBLogin() async {
-
+    final result = await facebookLogin.logIn(['email']);
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        final token = result.accessToken;
+        final response = await http.get(
+            "https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=$token");
+        final data1 = json.decode(response.body);
+        print(data);
+        setState(() {
+          _isLogin = true;
+          data = data1;
+        });
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        setState(() {
+          _isLogin = false;
+        });
+        break;
+      case FacebookLoginStatus.error:
+        setState(() {
+          _isLogin = false;
+        });
+        break;
+    }
   }
 
   onEmailClick() {
