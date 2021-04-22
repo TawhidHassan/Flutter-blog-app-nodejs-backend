@@ -50,6 +50,26 @@ class NetworkHandler {
     log.i(response.statusCode);
   }
 
+  Future<http.Response> userUpdate(String url, Map<String, String> body) async {
+    String token = await storage.read(key: "token");
+    url = formater(url);
+    log.d(body);
+    var response = await http.post(
+      url,
+      headers: {
+        "Content-type": "application/json",
+        "Authorization": "Bearer $token"
+      },
+      body: json.encode(body),
+    );
+    if(response.statusCode==200||response.statusCode==201){
+      log.i(response.body);
+      return response;
+    }
+    log.i(response.body);
+    log.i(response.statusCode);
+    log.i(response.statusCode);
+  }
 
   String formater(String url){
     return baseurl+url;

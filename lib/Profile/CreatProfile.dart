@@ -1,8 +1,7 @@
-
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_app_nodejs/Pages/HomePage.dart';
 import 'package:image_picker/image_picker.dart';
 import '../NetworkHandler.dart';
 
@@ -29,64 +28,88 @@ class _CreatProfileState extends State<CreatProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
-          key: _globalkey,
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-            children: [
-              imageProfile(),
-              SizedBox(
-                height: 20,
-              ),
-              nameTextField(),
-              SizedBox(
-                height: 20,
-              ),
-              professionTextField(),
-              SizedBox(
-                height: 20,
-              ),
-              dobField(),
-              SizedBox(
-                height: 20,
-              ),
-              titleTextField(),
-              SizedBox(
-                height: 20,
-              ),
-              aboutTextField(),
-              SizedBox(
-                height: 20,
-              ),
+        key: _globalkey,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          children: [
+            imageProfile(),
+            SizedBox(
+              height: 20,
+            ),
+            nameTextField(),
+            SizedBox(
+              height: 20,
+            ),
+            professionTextField(),
+            SizedBox(
+              height: 20,
+            ),
+            dobField(),
+            SizedBox(
+              height: 20,
+            ),
+            titleTextField(),
+            SizedBox(
+              height: 20,
+            ),
+            aboutTextField(),
+            SizedBox(
+              height: 20,
+            ),
+            InkWell(
+              onTap: () async {
+                setState(() {
+                  circular = true;
+                });
+                if (_globalkey.currentState.validate()) {
+                  Map<String, String> data = {
+                    "name": _name.text,
+                    "profession": _profession.text,
+                    "DOB": _dob.text,
+                    "titleline": _title.text,
+                    "about": _about.text,
+                  };
+                  var response =
+                  await networkHandler.userUpdate("/profile/add", data);
+                  if (response.statusCode == 200 ||
+                      response.statusCode == 201) {
 
-              InkWell(
-                onTap: () async {
 
-                },
-                child: Center(
-                  child: Container(
-                    width: 200,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.teal,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: circular
-                          ? CircularProgressIndicator()
-                          : Text(
-                        "Submit",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                      setState(() {
+                        circular = false;
+                      });
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                              (route) => false);
+
+                  }
+                }
+              },
+              child: Center(
+                child: Container(
+                  width: 200,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.teal,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: circular
+                        ? CircularProgressIndicator()
+                        : Text(
+                            "Submit",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -181,13 +204,13 @@ class _CreatProfileState extends State<CreatProfile> {
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.teal,
-            )),
+          color: Colors.teal,
+        )),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.orange,
-              width: 2,
-            )),
+          color: Colors.orange,
+          width: 2,
+        )),
         prefixIcon: Icon(
           Icons.person,
           color: Colors.green,
@@ -210,13 +233,13 @@ class _CreatProfileState extends State<CreatProfile> {
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.teal,
-            )),
+          color: Colors.teal,
+        )),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.orange,
-              width: 2,
-            )),
+          color: Colors.orange,
+          width: 2,
+        )),
         prefixIcon: Icon(
           Icons.person,
           color: Colors.green,
@@ -239,13 +262,13 @@ class _CreatProfileState extends State<CreatProfile> {
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.teal,
-            )),
+          color: Colors.teal,
+        )),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.orange,
-              width: 2,
-            )),
+          color: Colors.orange,
+          width: 2,
+        )),
         prefixIcon: Icon(
           Icons.person,
           color: Colors.green,
@@ -268,13 +291,13 @@ class _CreatProfileState extends State<CreatProfile> {
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.teal,
-            )),
+          color: Colors.teal,
+        )),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.orange,
-              width: 2,
-            )),
+          color: Colors.orange,
+          width: 2,
+        )),
         prefixIcon: Icon(
           Icons.person,
           color: Colors.green,
@@ -298,13 +321,13 @@ class _CreatProfileState extends State<CreatProfile> {
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.teal,
-            )),
+          color: Colors.teal,
+        )),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.orange,
-              width: 2,
-            )),
+          color: Colors.orange,
+          width: 2,
+        )),
         labelText: "About",
         helperText: "Write about yourself",
         hintText: "I am Dev Stack",
