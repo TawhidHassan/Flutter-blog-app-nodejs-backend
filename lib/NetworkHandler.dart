@@ -1,5 +1,10 @@
 import 'dart:convert';
-
+import 'dart:io';
+import 'dart:convert';
+import 'dart:ffi';
+import 'dart:async';
+import 'package:async/async.dart';
+import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -70,6 +75,29 @@ class NetworkHandler {
     log.i(response.statusCode);
     log.i(response.statusCode);
   }
+
+
+  Future<http.StreamedResponse> patchImage(String url, String filepath) async {
+    url = formater(url);
+    log.d(filepath);
+    String token = await storage.read(key: "token");
+
+    var request = http.MultipartRequest('PUT', Uri.parse(url));
+
+    request.files.add(await http.MultipartFile.fromPath("img", filepath));
+
+    request.headers.addAll({
+      "Content-type": "multipart/form-data",
+      "Authorization": "Bearer $token"
+    });
+    var response = await  request.send();
+    log.i(response.statusCode);
+    return response;
+  }
+
+
+
+
 
   String formater(String url){
     return baseurl+url;

@@ -16,14 +16,13 @@ class _CreatProfileState extends State<CreatProfile> {
   final networkHandler = NetworkHandler();
   bool circular = false;
   PickedFile _imageFile;
-  final ImagePicker _picker = ImagePicker();
   final _globalkey = GlobalKey<FormState>();
   TextEditingController _name = TextEditingController();
   TextEditingController _profession = TextEditingController();
   TextEditingController _dob = TextEditingController();
   TextEditingController _title = TextEditingController();
   TextEditingController _about = TextEditingController();
-
+  final ImagePicker _picker = ImagePicker();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +30,7 @@ class _CreatProfileState extends State<CreatProfile> {
         key: _globalkey,
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-          children: [
+          children: <Widget>[
             imageProfile(),
             SizedBox(
               height: 20,
@@ -73,15 +72,25 @@ class _CreatProfileState extends State<CreatProfile> {
                   await networkHandler.userUpdate("/profile/add", data);
                   if (response.statusCode == 200 ||
                       response.statusCode == 201) {
-
-
+                    if (_imageFile.path != null) {
+                      var imageResponse = await networkHandler.patchImage(
+                          "/profile/add/image", _imageFile.path);
+                      if (imageResponse.statusCode == 200) {
+                        setState(() {
+                          circular = false;
+                        });
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                                (route) => false);
+                      }
+                    } else {
                       setState(() {
                         circular = false;
                       });
                       Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(builder: (context) => HomePage()),
                               (route) => false);
-
+                    }
                   }
                 }
               },
@@ -97,13 +106,13 @@ class _CreatProfileState extends State<CreatProfile> {
                     child: circular
                         ? CircularProgressIndicator()
                         : Text(
-                            "Submit",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                      "Submit",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -125,7 +134,7 @@ class _CreatProfileState extends State<CreatProfile> {
         ),
         Positioned(
           bottom: 20.0,
-          right: 30.0,
+          right: 20.0,
           child: InkWell(
             onTap: () {
               showModalBottomSheet(
@@ -204,13 +213,13 @@ class _CreatProfileState extends State<CreatProfile> {
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
-          color: Colors.teal,
-        )),
+              color: Colors.teal,
+            )),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-          color: Colors.orange,
-          width: 2,
-        )),
+              color: Colors.orange,
+              width: 2,
+            )),
         prefixIcon: Icon(
           Icons.person,
           color: Colors.green,
@@ -233,13 +242,13 @@ class _CreatProfileState extends State<CreatProfile> {
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
-          color: Colors.teal,
-        )),
+              color: Colors.teal,
+            )),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-          color: Colors.orange,
-          width: 2,
-        )),
+              color: Colors.orange,
+              width: 2,
+            )),
         prefixIcon: Icon(
           Icons.person,
           color: Colors.green,
@@ -262,13 +271,13 @@ class _CreatProfileState extends State<CreatProfile> {
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
-          color: Colors.teal,
-        )),
+              color: Colors.teal,
+            )),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-          color: Colors.orange,
-          width: 2,
-        )),
+              color: Colors.orange,
+              width: 2,
+            )),
         prefixIcon: Icon(
           Icons.person,
           color: Colors.green,
@@ -291,13 +300,13 @@ class _CreatProfileState extends State<CreatProfile> {
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
-          color: Colors.teal,
-        )),
+              color: Colors.teal,
+            )),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-          color: Colors.orange,
-          width: 2,
-        )),
+              color: Colors.orange,
+              width: 2,
+            )),
         prefixIcon: Icon(
           Icons.person,
           color: Colors.green,
@@ -321,13 +330,13 @@ class _CreatProfileState extends State<CreatProfile> {
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
-          color: Colors.teal,
-        )),
+              color: Colors.teal,
+            )),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-          color: Colors.orange,
-          width: 2,
-        )),
+              color: Colors.orange,
+              width: 2,
+            )),
         labelText: "About",
         helperText: "Write about yourself",
         hintText: "I am Dev Stack",
