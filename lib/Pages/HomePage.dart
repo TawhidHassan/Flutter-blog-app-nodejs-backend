@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blog_app_nodejs/Pages/ProfileScreen.dart';
+import 'package:flutter_blog_app_nodejs/Profile/ProfileScreen.dart';
+
 import 'package:flutter_blog_app_nodejs/Screen/HomeScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'WelcomePage.dart';

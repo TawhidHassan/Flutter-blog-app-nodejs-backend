@@ -1,18 +1,25 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 class NetworkHandler {
   String baseurl = "https://whispering-tor-28571.herokuapp.com";
   var log = Logger();
+  FlutterSecureStorage storage = FlutterSecureStorage();
 
   Future get(String url) async
   {
+    String token = await storage.read(key: "token");
     url = formater(url);
+    log.d(url);
     // /user/register
-    var response= await http.get(url);
+    var response = await http.get(
+      url,
+      headers: {"Authorization": "Bearer $token"},
+    );
     if (response.statusCode == 200 || response.statusCode == 201) {
       log.i(response.body);
 
