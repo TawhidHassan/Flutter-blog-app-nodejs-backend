@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_app_nodejs/Pages/WelcomePage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'Pages/HomePage.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,6 +15,29 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+  Widget page = WelcomePage();
+  final storage = FlutterSecureStorage();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkLogin();
+  }
+
+  void checkLogin() async {
+    String token = await storage.read(key: "token");
+    if (token != null) {
+      setState(() {
+        page = HomePage();
+      });
+    } else {
+      setState(() {
+        page = WelcomePage();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,7 +47,7 @@ class _MyAppState extends State<MyApp> {
           Theme.of(context).textTheme,
         ),
       ),
-      home:WelcomePage(),
+        home: page,
     );
   }
 }
