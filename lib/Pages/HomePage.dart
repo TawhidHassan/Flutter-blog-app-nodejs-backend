@@ -4,6 +4,8 @@ import 'package:flutter_blog_app_nodejs/Profile/ProfileScreen.dart';
 
 import 'package:flutter_blog_app_nodejs/Screen/HomeScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:logger/logger.dart';
+import '../NetworkHandler.dart';
 import 'WelcomePage.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,7 +17,53 @@ class _HomePageState extends State<HomePage> {
   int currentState = 0;
   List<Widget> widgets = [HomeScreen(), ProfileScreen()];
   List<String> titleString = ["Home Page", "Profile Page"];
+  var log=Logger();
   final storage = FlutterSecureStorage();
+
+  NetworkHandler networkHandler = NetworkHandler();
+  String username = "";
+  Widget profilePhoto = Container(
+    height: 100,
+    width: 100,
+    decoration: BoxDecoration(
+      color: Colors.black,
+      borderRadius: BorderRadius.circular(50),
+    ),
+  );
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    log.i("running");
+    checkProfile();
+  }
+
+  void checkProfile() async {
+    var response = await networkHandler.get("/profile/checkProfile");
+    setState(() {
+      username = response['username'];
+    });
+    if (response["status"] == true) {
+      setState(() {
+        profilePhoto = CircleAvatar(
+          radius: 50,
+          backgroundImage: NetworkHandler().getImage(response['username']),
+        );
+      });
+    } else {
+      setState(() {
+        profilePhoto = Container(
+          height: 100,
+          width: 100,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(50),
+          ),
+        );
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +73,7 @@ class _HomePageState extends State<HomePage> {
             DrawerHeader(
               child: Column(
                 children: <Widget>[
-
+                  profilePhoto,
                   SizedBox(
                     height: 10,
                   ),
