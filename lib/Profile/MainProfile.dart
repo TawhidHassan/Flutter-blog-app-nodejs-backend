@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_app_nodejs/Model/profileModel.dart';
 
 import '../NetworkHandler.dart';
 
@@ -10,7 +11,7 @@ class MainProfile extends StatefulWidget {
 class _MainProfileState extends State<MainProfile> {
   bool circular = true;
   NetworkHandler networkHandler = NetworkHandler();
-
+  ProfileModel profileModel = ProfileModel();
   @override
   void initState() {
     super.initState();
@@ -21,6 +22,7 @@ class _MainProfileState extends State<MainProfile> {
   void fetchData() async {
     var response = await networkHandler.get("/profile/getData");
     setState(() {
+      profileModel = ProfileModel.fromJson(response["data"]);
       circular = false;
     });
   }
@@ -53,10 +55,10 @@ class _MainProfileState extends State<MainProfile> {
                 Divider(
                   thickness: 0.8,
                 ),
-                otherDetails("About", "profileModel.about"),
-                otherDetails("Name", "profileModel.name"),
-                otherDetails("Profession", "profileModel.profession"),
-                otherDetails("DOB", "profileModel.DOB"),
+                otherDetails("About", profileModel.about),
+                otherDetails("Name", profileModel.name),
+                otherDetails("Profession", profileModel.profession),
+                otherDetails("DOB", profileModel.DOB),
                 Divider(
                   thickness: 0.8,
                 ),
@@ -77,18 +79,17 @@ class _MainProfileState extends State<MainProfile> {
           Center(
             child: CircleAvatar(
               radius: 50,
-              backgroundImage:NetworkHandler().getImage("yyy"
-                  ""),
+              backgroundImage: NetworkHandler().getImage(profileModel.username),
             ),
           ),
           Text(
-            "profileModel.username",
+            profileModel.username,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(
             height: 10,
           ),
-          Text("profileModel.titleline")
+          Text(profileModel.titleline)
         ],
       ),
     );
