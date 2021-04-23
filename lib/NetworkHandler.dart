@@ -82,7 +82,7 @@ class NetworkHandler {
     log.d(filepath);
     String token = await storage.read(key: "token");
 
-    var request = http.MultipartRequest('PUT', Uri.parse(url));
+    var request = http.MultipartRequest('PATCH', Uri.parse(url));
 
     request.files.add(await http.MultipartFile.fromPath("img", filepath));
 
@@ -95,7 +95,11 @@ class NetworkHandler {
     return response;
   }
 
-
+  NetworkImage getImage(String imageName) {
+    log.i("image facing");
+    String url = formater("/uploads/$imageName.jpg");
+    return NetworkImage(url);
+  }
 
 
 
