@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_app_nodejs/Blog/addBlog.dart';
 import 'package:flutter_blog_app_nodejs/Profile/ProfileScreen.dart';
 
 import 'package:flutter_blog_app_nodejs/Screen/HomeScreen.dart';
@@ -73,7 +74,10 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.teal,
         onPressed: () {
-
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => AddBlog()),
+                  (route) => false);
         },
         child: Text(
           "+",
