@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_app_nodejs/CustumWidget/OverlayCard.dart';
+import 'package:flutter_blog_app_nodejs/Pages/HomePage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
-
+import 'package:flutter_blog_app_nodejs/Model/addBlogModels.dart';
 import '../NetworkHandler.dart';
 
 class AddBlog extends StatefulWidget {
@@ -153,7 +156,26 @@ class _AddBlogState extends State<AddBlog> {
     return InkWell(
       onTap: () async {
         if (_imageFile != null && _globalkey.currentState.validate()) {
-            log.i("done");
+          AddBlogModel addBlogModel =
+          AddBlogModel(body: _body.text, title: _title.text);
+          var response = await networkHandler.post1(
+              "/blogpost/Add", addBlogModel.toJson());
+          print(response.body);
+
+          if (response.statusCode == 200 || response.statusCode == 201) {
+            String id = json.decode(response.body)["data"];
+            var imageResponse = await networkHandler.patchImage(
+                "/blogpost/add/coverImage/$id", _imageFile.path);
+            print(imageResponse.statusCode);
+            if (imageResponse.statusCode == 200 ||
+                imageResponse.statusCode == 201) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                      (route) => false);
+            }
+          }
+
         }
       },
       child: Center(
