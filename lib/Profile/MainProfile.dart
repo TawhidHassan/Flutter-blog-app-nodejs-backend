@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_app_nodejs/Blog/Blogs.dart';
 import 'package:flutter_blog_app_nodejs/Model/profileModel.dart';
 
 import '../NetworkHandler.dart';
 
 class MainProfile extends StatefulWidget {
+  MainProfile({Key key}) : super(key: key);
+
   @override
   _MainProfileState createState() => _MainProfileState();
 }
@@ -50,23 +53,26 @@ class _MainProfileState extends State<MainProfile> {
       body: circular
           ? Center(child: CircularProgressIndicator())
           : ListView(
-              children: <Widget>[
-                head(),
-                Divider(
-                  thickness: 0.8,
-                ),
-                otherDetails("About", profileModel.about),
-                otherDetails("Name", profileModel.name),
-                otherDetails("Profession", profileModel.profession),
-                otherDetails("DOB", profileModel.DOB),
-                Divider(
-                  thickness: 0.8,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
+        children: <Widget>[
+          head(),
+          Divider(
+            thickness: 0.8,
+          ),
+          otherDetails("About", profileModel.about),
+          otherDetails("Name", profileModel.name),
+          otherDetails("Profession", profileModel.profession),
+          otherDetails("DOB", profileModel.DOB),
+          Divider(
+            thickness: 0.8,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Blogs(
+            url: "/blogpost/getOwnBlog",
+          ),
+        ],
+      ),
     );
   }
 
@@ -119,5 +125,4 @@ class _MainProfileState extends State<MainProfile> {
       ),
     );
   }
-
 }
